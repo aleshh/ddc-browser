@@ -1,0 +1,19 @@
+{
+  "name": "ddc-browser",
+  "version": "0.1.0",
+  "description": "Methods for retrieving results from a catalog of the Dewey Decimal Classification system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleshh/ddc-browser.git"
+  },
+  "author": "Alesh Houdek <mail@alesh.com> (https://alesh.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aleshh/ddc-browser/issues"
+  },
+  "homepage": "https://github.com/aleshh/ddc-browser#readme"
+}

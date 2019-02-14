@@ -1,10 +1,10 @@
-import ddc from './ddcIndex.json'
+import ddcIndex from './ddcIndex.json'
 
 /**
  * Methods for retrieving results from a catalog of the Dewey Decimal
  * Classification system.
  */
-class ddc {
+class Ddc {
 
   /**
    * Searches the DDC and returns any entry that matches the string, either in
@@ -17,7 +17,7 @@ class ddc {
    *   only from one level of the heiarchy. In each array the last item is the
    *   result, the previous items are what's above it in the heiarchy.
    */
-  search = (searchTerm, index = ddc) => {
+  search = (searchTerm, index = ddcIndex) => {
     const results = []
     const searchTermLc = searchTerm.toLowerCase()
 
@@ -29,7 +29,7 @@ class ddc {
           results.push([entry])
         }
         if (entry.subordinates != null) {
-          let subordinates = searchDdc(searchTerm, entry.subordinates)
+          let subordinates = this.search(searchTerm, entry.subordinates)
           if (subordinates) {
             subordinates.forEach(result => {
               result.unshift(entry)
@@ -73,7 +73,7 @@ class ddc {
     const results = []
 
     // hideous tangle of nested loops. fix me! hopefully with recursion?
-    ddc.forEach(mainClass => {
+    ddcIndex.forEach(mainClass => {
       if (depth === 0) {
         results.push([mainClass])
       } else {
@@ -134,4 +134,4 @@ const removeBlankEntries = results => (
   ))
 )
 
-export { ddc }
+export default Ddc
