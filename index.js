@@ -17,7 +17,7 @@ class Ddc {
    *   only from one level of the heiarchy. In each array the last item is the
    *   result, the previous items are what's above it in the heiarchy.
    */
-  search = (searchTerm, index = ddcIndex) => {
+  search (searchTerm, index = ddcIndex) {
     const results = []
     const searchTermLc = searchTerm.toLowerCase()
 
@@ -53,7 +53,7 @@ class Ddc {
    *   only from one level of the heiarchy. In each array the last item is the
    *   result, the previous items are what's above it in the heiarchy.
    */
-  retrieve = number => {
+  retrieve (number) {
     // test if number is three digits, optionally with some x's at the end
     // should not happen: func only gets called from inside the house
     if (!/^\d{3}$|^\d{2}x$|^\dxx$|^x{3}$/.test(number)) {

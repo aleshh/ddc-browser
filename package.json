@@ -1,6 +1,6 @@
 {
   "name": "ddc-browser",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Methods for retrieving results from a catalog of the Dewey Decimal Classification system",
   "main": "index.js",
   "scripts": {
