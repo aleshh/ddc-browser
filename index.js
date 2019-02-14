@@ -7,6 +7,44 @@ import ddc from './ddcIndex.json'
 class ddc {
 
   /**
+   * Searches the DDC and returns any entry that matches the string, either in
+   * the class number or the description string.
+   * @param {string} number - A string with a 3-digit number, optionally with
+   *   some digits of the number replaced by 'x'
+   * @param {array} index - Defaults to the DDC. You probably don't want to
+   *   pass anything here; it's a parameter becasue the function is recursive.
+   * @returns {array} of arrays of objects of DDC classes. These will always be
+   *   only from one level of the heiarchy. In each array the last item is the
+   *   result, the previous items are what's above it in the heiarchy.
+   */
+  search = (searchTerm, index = ddc) => {
+    const results = []
+    const searchTermLc = searchTerm.toLowerCase()
+
+    if (searchTerm.length > 0) {
+      index.forEach(entry => {
+        if (entry.description.toLowerCase().includes(searchTermLc) ||
+            entry.number.includes(searchTermLc)
+        ) {
+          results.push([entry])
+        }
+        if (entry.subordinates != null) {
+          let subordinates = searchDdc(searchTerm, entry.subordinates)
+          if (subordinates) {
+            subordinates.forEach(result => {
+              result.unshift(entry)
+            })
+            results.push(...subordinates)
+          }
+        }
+      })
+    }
+    return (results.length > 0)
+      ? removeBlankEntries(removeDuplicateHeadersFromResults(results))
+      : null
+  }
+
+  /**
    * Returns a list of classes from the DDC. 'xxx' will return the main classes,
    * '1xx' will return the 10 classes under Philosophy and Psychology, etc.
    * @param {string} number - A string with a 3-digit number, optionally with
@@ -15,7 +53,7 @@ class ddc {
    *   only from one level of the heiarchy. In each array the last item is the
    *   result, the previous items are what's above it in the heiarchy.
    */
-  retrieveDdc = number => {
+  retrieve = number => {
     // test if number is three digits, optionally with some x's at the end
     // should not happen: func only gets called from inside the house
     if (!/^\d{3}$|^\d{2}x$|^\dxx$|^x{3}$/.test(number)) {
@@ -64,44 +102,6 @@ class ddc {
       }
     })
     return removeBlankEntries(removeDuplicateHeadersFromResults(results))
-  }
-
-  /**
-   * Searches the DDC and returns any entry that matches the string, either in
-   * the class number or the description string.
-   * @param {string} number - A string with a 3-digit number, optionally with
-   *   some digits of the number replaced by 'x'
-   * @param {array} index - Defaults to the DDC. You probably don't want to
-   *   pass anything here; it's a parameter becasue the function is recursive.
-   * @returns {array} of arrays of objects of DDC classes. These will always be
-   *   only from one level of the heiarchy. In each array the last item is the
-   *   result, the previous items are what's above it in the heiarchy.
-   */
-  searchDdc = (searchTerm, index = ddc) => {
-    const results = []
-    const searchTermLc = searchTerm.toLowerCase()
-
-    if (searchTerm.length > 0) {
-      index.forEach(entry => {
-        if (entry.description.toLowerCase().includes(searchTermLc) ||
-            entry.number.includes(searchTermLc)
-        ) {
-          results.push([entry])
-        }
-        if (entry.subordinates != null) {
-          let subordinates = searchDdc(searchTerm, entry.subordinates)
-          if (subordinates) {
-            subordinates.forEach(result => {
-              result.unshift(entry)
-            })
-            results.push(...subordinates)
-          }
-        }
-      })
-    }
-    return (results.length > 0)
-      ? removeBlankEntries(removeDuplicateHeadersFromResults(results))
-      : null
   }
 
 }
