@@ -81,7 +81,7 @@
         { "id": "028.7", "number": "028.7", "description": "Use of books and other media as sources of information" }
       ]}
     ]},
-    { "id": "03x", "number": "030", "description": "General encyclopedic works [classify subject works in actual subject and add 03. ie. music 780.3, medicine 610.3; mammals 599.03", "subordinates": [
+    { "id": "03x", "number": "030", "description": "General encyclopedic works", "subordinates": [
       { "id": "030", "number": "030", "description": "General Encyclopedic works. ie. Britannica" },
       { "id": "031", "number": "031", "description": "American. ie. Americana" },
       { "id": "032", "number": "032", "description": "In English" },
