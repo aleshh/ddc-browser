@@ -1,4 +1,5 @@
 import ddcIndex from './ddcIndex.json'
+import { debug } from 'util';
 
 /**
  * Methods for retrieving results from a catalog of the Dewey Decimal
@@ -40,7 +41,7 @@ class Ddc {
       })
     }
     return (results.length > 0)
-      ? removeBlankEntries(removeDuplicateHeadersFromResults(results))
+      ? cleanUpEntries(results)
       : null
   }
 
@@ -101,16 +102,30 @@ class Ddc {
         }
       }
     })
-    return removeBlankEntries(removeDuplicateHeadersFromResults(results))
+    return cleanUpEntries(results)
   }
-
 }
 
+/**
+ * Executes several steps to remove data unnecessary data for display.
+ * @param {array} rawResults - Array of results to be prepared for returning.
+ * @returns {array} - Processed results ready for display.
+ */
+const cleanUpEntries = rawResults => {
+  const pass1 = removeDuplicateHeadersFromResults(rawResults)
+  const pass2 = removeBlankEntries(pass1)
+  const pass3 = removeSubordinates(pass2)
+  return pass3
+}
 
-// searchDdc and retrieveDdc each produce an array of arrays where the last
-// element in each inner array is the result, the previous elements are the
-// path. removes the path elements (headings) that are in the previous
-// entry
+/**
+ * searchDdc and retrieveDdc each produce an array of arrays where the last
+ * element in each inner array is the result, the previous elements are the
+ * path. removes the path elements (headings) that are in the previous
+ * entry
+ * @param {array} results Array of arrays
+ * @returns {array} Array of arrays with duplicate "headers" removed
+ */
 const removeDuplicateHeadersFromResults = results => {
   const filteredResults = [results[0]]
 
@@ -128,10 +143,45 @@ const removeDuplicateHeadersFromResults = results => {
   return filteredResults
 }
 
+/**
+ * Similar to removeDuplicateHeadersFromResults(), this version removes
+ * headers only if all of them are identical to the previous entry.
+ * @param {array} results Array of arrays
+ * @returns {array} Array of arrays with duplicate "headers" removed
+ */
+const removeHeadersIfUnchanged = results => {
+  const filteredResults = results.map((element, i) => {
+    // if the next-to-last item in the element matches the next-to-last item
+    // in the previous element, remove all but the last element
+    if (element[-2] === results[i - 1][-2]) {
+      return element.splice(0, (element.length - 2))
+    }
+    return element
+  })
+
+  return filteredResults
+}
+
 const removeBlankEntries = results => (
   results.filter(entry => (
     !['', 'Unassigned'].includes(entry[entry.length - 1].description)
   ))
 )
+
+/**
+ * Duplicate array of arrays while removing subordinates.
+ * @param {array} results - Array of entries to be processed.
+ * @returns {array} - Array of entries with subordinates removed.
+ */
+const removeSubordinates = results => {
+  const filteredResults = results.map(item => {
+    return item.map(entry => ({
+      id: entry.id,
+      number: entry.number,
+      description: entry.description
+    }))
+  })
+  return filteredResults
+}
 
 export default Ddc
